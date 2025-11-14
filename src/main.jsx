@@ -97,15 +97,29 @@ try {
     </StrictMode>
   );
   console.log("✅ App rendered successfully");
+  
+  // Hide loading indicator once app renders
+  const loadingEl = document.getElementById('loading');
+  if (loadingEl) {
+    setTimeout(() => {
+      loadingEl.style.display = 'none';
+    }, 100);
+  }
 } catch (error) {
   console.error("❌ Failed to render app:", error);
+  const loadingEl = document.getElementById('loading');
+  if (loadingEl) loadingEl.style.display = 'none';
+  
   if (rootElement) {
     rootElement.innerHTML = `
-      <div style="padding: 20px; text-align: center; font-family: sans-serif;">
-        <h1>Failed to load application</h1>
-        <p>${error.message}</p>
-        <pre style="text-align: left; background: #f5f5f5; padding: 10px; border-radius: 4px; overflow: auto;">${error.stack}</pre>
-        <button onclick="window.location.reload()" style="margin-top: 20px; padding: 10px 20px; background: #0070f3; color: white; border: none; border-radius: 4px; cursor: pointer;">Reload Page</button>
+      <div style="padding: 20px; text-align: center; font-family: sans-serif; background: #fee; border: 2px solid #fcc; margin: 20px; border-radius: 8px;">
+        <h1 style="color: #c33;">Failed to load application</h1>
+        <p style="color: #666;">${error.message}</p>
+        <details style="text-align: left; margin-top: 20px; background: #f5f5f5; padding: 10px; border-radius: 4px;">
+          <summary style="cursor: pointer; font-weight: bold;">Error Details</summary>
+          <pre style="overflow: auto; font-size: 12px; margin-top: 10px;">${error.stack || 'No stack trace available'}</pre>
+        </details>
+        <button onclick="window.location.reload()" style="margin-top: 20px; padding: 10px 20px; background: #0070f3; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Reload Page</button>
       </div>
     `;
   }

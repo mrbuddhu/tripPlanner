@@ -1,8 +1,15 @@
 import { GoogleGenAI, Type } from '@google/genai';
 
-const ai = new GoogleGenAI({
-  apiKey: import.meta.env.VITE_GOGGLE_GEMINI_AI_API_KEY,
-});
+// Get API key with fallback for typo in env var name
+const apiKey = import.meta.env.VITE_GOOGLE_GEMINI_AI_API_KEY || 
+                import.meta.env.VITE_GOGGLE_GEMINI_AI_API_KEY;
+
+if (!apiKey) {
+  console.warn('⚠️ Google Gemini API key not found. Set VITE_GOOGLE_GEMINI_AI_API_KEY environment variable.');
+}
+
+// Initialize AI only if API key is available
+const ai = apiKey ? new GoogleGenAI({ apiKey }) : null;
 
 const model = 'gemini-2.5-flash';
 
@@ -67,6 +74,10 @@ const travelPlanSchema = {
 };
 
 export async function chat(history, userMessage) {
+  if (!ai) {
+    throw new Error('Google Gemini API key is not configured. Please set VITE_GOOGLE_GEMINI_AI_API_KEY environment variable in Vercel project settings.');
+  }
+
   const config = {
     responseMimeType: 'application/json',
     responseSchema: userMessage.toLowerCase().includes('travel plan') ? travelPlanSchema : undefined,

@@ -27,17 +27,22 @@ export default function PlaceImage({ query, className = "", alt = "", style = {}
   }, [query]);
 
   return (
-    <div className={`w-full h-full ${className}`} style={style}>
+    <div className={`w-full h-full relative ${className}`} style={style}>
+      {loading && (
+        <div className="absolute inset-0 bg-gray-200 animate-pulse rounded" />
+      )}
       <img
         src={src}
         alt={alt || query}
-        className={`w-full h-full object-cover object-center transition-transform duration-500 ${
-          loading ? "opacity-60" : "opacity-100"
+        className={`w-full h-full object-cover object-center transition-all duration-500 ${
+          loading ? "opacity-0" : "opacity-100"
         }`}
+        onLoad={() => setLoading(false)}
         onError={(e) => {
           // replace broken remote url with local fallback
           e.currentTarget.onerror = null;
           e.currentTarget.src = DEFAULT_IMAGE;
+          setLoading(false);
         }}
       />
     </div>

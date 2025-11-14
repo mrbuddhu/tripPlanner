@@ -64,7 +64,7 @@ export default function Hotel({ trip, hotels }) {
             <article
               key={h?.id || idx}
               className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col 
-                         transform transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:scale-[1.01] hover:bg-gray-50"
+                         transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:border-indigo-200 hover:scale-[1.02]"
             >
               <div className="h-40 w-full overflow-hidden bg-gray-100">
                 <PlaceImage
@@ -110,7 +110,7 @@ export default function Hotel({ trip, hotels }) {
                       )
                     }
                     className="px-3 py-2 bg-indigo-600 text-white text-sm rounded-md 
-                               hover:bg-indigo-700 transition-colors duration-300"
+                               hover:bg-indigo-700 hover:shadow-md transition-all duration-300 hover:scale-105 active:scale-95"
                   >
                     View
                   </button>

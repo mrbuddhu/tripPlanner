@@ -8,6 +8,7 @@ import Hotel from "../components/Hotel";
 import Placestovisit from "../components/Placestovisit";
 // CORRECT import: go up two levels to src then into components
 import Footer from "../components/footer";
+import { SkeletonTripView } from "../../components/SkeletonLoader";
 
 function Viewtrip() {
   const { tripId } = useParams();
@@ -37,15 +38,21 @@ function Viewtrip() {
   };
 
   return (
-    <div className="p-10 md:px-20 lg:px-44 xl:px-56 space-y-10">
-      {/* Information Section */}
-      {trip ? <InfoSec trip={trip} /> : <p>Loading trip data...</p>}
+    <div className="p-10 md:px-20 lg:px-44 xl:px-56 space-y-10 animate-fadeIn">
+      {trip ? (
+        <>
+          {/* Information Section */}
+          <InfoSec trip={trip} />
 
-      {/* Recommended Hotels */}
-      {trip ? <Hotel trip={trip} /> : null}
+          {/* Recommended Hotels */}
+          <Hotel trip={trip} />
 
-      {/* Daily Activities Section */}
-      <Placestovisit trip={trip} />
+          {/* Daily Activities Section */}
+          <Placestovisit trip={trip} />
+        </>
+      ) : (
+        <SkeletonTripView />
+      )}
 
       <Footer />
     </div>

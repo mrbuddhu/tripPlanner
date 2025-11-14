@@ -84,8 +84,8 @@ export default function Placestovisit({ trip }) {
                     <article
                       key={idx}
                       className="bg-white rounded-2xl border border-gray-100 p-4 flex flex-col shadow-sm 
-                                 hover:shadow-lg transform transition-all duration-300 hover:-translate-y-1
-                                 h-full min-h-[230px] justify-between"
+                                 hover:shadow-xl hover:border-indigo-200 transform transition-all duration-300 hover:-translate-y-1
+                                 h-full min-h-[230px] justify-between group"
                     >
                       <div className="flex gap-5 flex-1">
                         <div className="flex-shrink-0 w-28 h-28 flex items-center justify-center overflow-hidden bg-gray-100 rounded-xl self-center">

@@ -5,6 +5,7 @@ import { FaMapMarkerAlt, FaStar } from "react-icons/fa";
 import { db } from "../service/firebaseConfig";
 import { collection, query, where, orderBy, getDocs } from "firebase/firestore";
 import { fetchImageFor, DEFAULT_IMAGE } from "../lib/utils";
+import { SkeletonCard } from "../components/SkeletonLoader";
 
 export default function MyTrips() {
   const [trips, setTrips] = useState([]); // array of trip docs (may include resolvedImage)
@@ -138,10 +139,16 @@ export default function MyTrips() {
     `${trip.tripData?.duration ?? ""}${trip.tripData?.budget_category ? " • " + trip.tripData.budget_category : ""}`;
 
   return (
-    <section className="p-6 sm:px-10 lg:px-16">
+    <section className="p-6 sm:px-10 lg:px-16 animate-fadeIn">
       <h1 className="text-3xl font-extrabold mb-6">My Trips</h1>
 
-      {loading && <p className="text-gray-500">Loading trips...</p>}
+      {loading && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1, 2, 3].map((i) => (
+            <SkeletonCard key={i} />
+          ))}
+        </div>
+      )}
 
       {!loading && error && (
         <div className="mb-6">
@@ -184,11 +191,18 @@ export default function MyTrips() {
       )}
 
       {!loading && !error && userState && !userState.__parseError && trips.length === 0 && (
-        <div className="text-center py-12">
-          <p className="text-gray-600 mb-4">No saved trips yet.</p>
-          <button onClick={() => navigate("/create-trip")} className="px-4 py-2 bg-indigo-600 text-white rounded-md">
-            Create Your First Trip
-          </button>
+        <div className="text-center py-16 px-4">
+          <div className="max-w-md mx-auto">
+            <div className="text-6xl mb-4">✈️</div>
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">No trips yet</h2>
+            <p className="text-gray-600 mb-6">Start planning your next adventure! Create your first AI-powered trip plan.</p>
+            <button 
+              onClick={() => navigate("/create-trip")} 
+              className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105"
+            >
+              Create Your First Trip
+            </button>
+          </div>
         </div>
       )}
 
@@ -202,7 +216,8 @@ export default function MyTrips() {
             return (
               <article
                 key={trip.id}
-                className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow duration-200"
+                onClick={() => navigate(`/view-trip/${trip.id}`)}
+                className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer"
               >
                 <div className="w-full h-40 sm:h-44 lg:h-44 overflow-hidden rounded-t-2xl bg-gray-50">
                   <img

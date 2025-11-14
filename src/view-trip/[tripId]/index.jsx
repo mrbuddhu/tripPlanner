@@ -7,7 +7,7 @@ import InfoSec from "../components/infoSec";
 import Hotel from "../components/Hotel";
 import Placestovisit from "../components/Placestovisit";
 // CORRECT import: go up two levels to src then into components
-import Footer from "../components/Footer";
+import Footer from "../components/footer";
 
 function Viewtrip() {
   const { tripId } = useParams();

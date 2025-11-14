@@ -49,9 +49,11 @@ const router = createBrowserRouter([
   }
 ]);
 
+const googleClientId = import.meta.env.VITE_GOGGLE_AUTH_CLIENT_ID || import.meta.env.VITE_GOOGLE_AUTH_CLIENT_ID || "";
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOGGLE_AUTH_CLIENT_ID}>
+    <GoogleOAuthProvider clientId={googleClientId}>
       <Toaster />
       <RouterProvider router={router} />
     </GoogleOAuthProvider>

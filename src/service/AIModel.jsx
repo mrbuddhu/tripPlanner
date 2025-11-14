@@ -74,33 +74,58 @@ const travelPlanSchema = {
 };
 
 export async function chat(history, userMessage) {
+  console.log('🤖 AI chat called with:', { historyLength: history.length, messageLength: userMessage.length });
+  
   if (!ai) {
-    throw new Error('Google Gemini API key is not configured. Please set VITE_GOOGLE_GEMINI_AI_API_KEY environment variable in Vercel project settings.');
+    const errorMsg = 'Google Gemini API key is not configured. Please set VITE_GOOGLE_GEMINI_AI_API_KEY environment variable in Vercel project settings.';
+    console.error('❌', errorMsg);
+    throw new Error(errorMsg);
   }
 
-  const config = {
-    responseMimeType: 'application/json',
-    responseSchema: userMessage.toLowerCase().includes('travel plan') ? travelPlanSchema : undefined,
-  };
-  
-  const updatedContents = [
-    ...history,
-    {
-      role: 'user',
-      parts: [{ text: userMessage }],
-    },
-  ];
-  
-  const response = await ai.models.generateContentStream({
-    model,
-    config,
-    contents: updatedContents,
-  });
-  
-  let fullResponseText = '';
-  for await (const chunk of response) {
-    fullResponseText += chunk.text;
+  try {
+    const config = {
+      responseMimeType: 'application/json',
+      responseSchema: userMessage.toLowerCase().includes('travel plan') ? travelPlanSchema : undefined,
+    };
+    
+    console.log('📝 AI config:', { model, hasSchema: !!config.responseSchema });
+    
+    const updatedContents = [
+      ...history,
+      {
+        role: 'user',
+        parts: [{ text: userMessage }],
+      },
+    ];
+    
+    console.log('🚀 Calling AI API...');
+    const response = await ai.models.generateContentStream({
+      model,
+      config,
+      contents: updatedContents,
+    });
+    
+    console.log('📥 Received response stream, collecting...');
+    let fullResponseText = '';
+    let chunkCount = 0;
+    for await (const chunk of response) {
+      chunkCount++;
+      if (chunk.text) {
+        fullResponseText += chunk.text;
+      } else {
+        console.warn('⚠️ Chunk without text:', chunk);
+      }
+    }
+    
+    console.log(`✅ Collected ${chunkCount} chunks, total length: ${fullResponseText.length}`);
+    return fullResponseText;
+  } catch (error) {
+    console.error('❌ AI API error:', error);
+    console.error('Error details:', {
+      message: error.message,
+      name: error.name,
+      stack: error.stack,
+    });
+    throw error;
   }
-  
-  return fullResponseText;
 }

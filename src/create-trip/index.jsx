@@ -141,6 +141,8 @@ const OnGenarateTrip = async () => {
       .replace("{location}", formData.location);
 
     console.log("🧠 Final Prompt:", Final_Prompt);
+    console.log("📋 Form Data:", formData);
+    console.log("🔑 API Key check:", import.meta.env.VITE_GOOGLE_GEMINI_AI_API_KEY ? "✅ Present" : "❌ Missing");
 
     // retry wrapper around the chat call
     const rawResponse = await retryAsync(

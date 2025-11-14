@@ -4,10 +4,32 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
+    <title>Travelia - AI Trip Planner</title>
+    <noscript>
+      <style>
+        body { font-family: sans-serif; padding: 20px; text-align: center; }
+      </style>
+    </noscript>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <noscript>
+        <div style="padding: 20px; text-align: center; font-family: sans-serif;">
+          <h1>JavaScript Required</h1>
+          <p>Please enable JavaScript to use this application.</p>
+        </div>
+      </noscript>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
+    <script>
+      // Fallback if React fails to load
+      window.addEventListener('error', function(e) {
+        console.error('Global error:', e.error);
+        var root = document.getElementById('root');
+        if (root && !root.innerHTML.includes('Failed to load')) {
+          root.innerHTML = '<div style="padding: 20px; text-align: center; font-family: sans-serif;"><h1>Error Loading Application</h1><p>Check the browser console for details.</p><button onclick="window.location.reload()" style="margin-top: 10px; padding: 10px 20px; background: #0070f3; color: white; border: none; border-radius: 4px; cursor: pointer;">Reload</button></div>';
+        }
+      });
+    </script>
   </body>
 </html>

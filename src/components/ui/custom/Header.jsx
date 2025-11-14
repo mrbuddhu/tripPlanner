@@ -59,6 +59,7 @@ export default function Header() {
   // 🧭 Handlers
   const handleSignIn = () => navigate("/create-trip");
   const handleMyTrips = () => navigate("/my-trips");
+  const handleCreateTrip = () => navigate("/create-trip");
 
   const handleLogout = () => {
     localStorage.removeItem("userInfo");
@@ -96,9 +97,16 @@ export default function Header() {
         {user ? (
           <>
             <button
+              onClick={handleCreateTrip}
+              className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 
+                         text-white font-semibold py-2 px-5 rounded-md shadow-md transition duration-300 ease-in-out hover:scale-105"
+            >
+              Plan Trip
+            </button>
+            <button
               onClick={handleMyTrips}
               className="bg-gradient-to-r from-purple-700 to-indigo-600 hover:from-purple-800 hover:to-indigo-700 
-                         text-white font-semibold py-2 px-5 rounded-md shadow-md transition duration-300 ease-in-out"
+                         text-white font-semibold py-2 px-5 rounded-md shadow-md transition duration-300 ease-in-out hover:scale-105"
             >
               My Trips
             </button>

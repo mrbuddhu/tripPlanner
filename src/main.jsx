@@ -1,4 +1,3 @@
-console.log("🚀 App starting...");
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
@@ -12,6 +11,7 @@ import Viewtrip from "./view-trip/[tripId]/index.jsx";
 import MyTrips from "./my-trips/index.jsx";
 import ErrorBoundary from "./components/ErrorBoundary";
 
+console.log("🚀 App starting...");
 console.log("✅ All imports loaded");
 
 const router = createBrowserRouter([

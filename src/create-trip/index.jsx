@@ -286,15 +286,19 @@ const OnGenarateTrip = async () => {
     }
   };
 
-  // ---------------- Google Login ----------------
+  // ---------------- Google Login ---------------- 
  const login = useGoogleLogin({
+  // Explicitly set redirect URI to current origin
+  redirect_uri: window.location.origin,
   onSuccess: async (tokenResponse) => {
     try {
+      console.log("✅ OAuth success, fetching user profile...");
       const res = await axios.get("https://www.googleapis.com/oauth2/v3/userinfo", {
         headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
       });
 
       const profile = res.data;
+      console.log("✅ User profile fetched:", profile);
 
       // ✅ Save login info in localStorage
       localStorage.setItem(
@@ -313,14 +317,29 @@ const OnGenarateTrip = async () => {
       toast.success(`Welcome, ${profile.name}!`);
       setShowDialog(false);
     } catch (err) {
-      console.error("Error fetching profile:", err);
-      toast.error("Failed to fetch user profile.");
+      console.error("❌ Error fetching profile:", err);
+      toast.error("Failed to fetch user profile. Please try again.");
     }
   },
   onError: (error) => {
-    console.error("Login failed:", error);
-    toast.error("Login failed. Please try again.");
+    console.error("❌ Login failed:", error);
+    console.error("Error details:", {
+      error: error.error,
+      errorDescription: error.error_description,
+      errorUri: error.error_uri,
+    });
+    
+    let errorMessage = "Login failed. Please try again.";
+    if (error.error === "redirect_uri_mismatch") {
+      errorMessage = "OAuth configuration error. Please contact support or check Google Cloud Console settings.";
+    } else if (error.error_description) {
+      errorMessage = error.error_description;
+    }
+    
+    toast.error(errorMessage);
   },
+  // Request access to user profile
+  scope: "openid email profile",
 });
 
 

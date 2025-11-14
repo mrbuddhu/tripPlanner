@@ -40,11 +40,34 @@ export default function WeatherWidget({ location = "", units = "metric", cacheTT
   // Normalize location -> query string for OpenWeatherMap
   const makeQuery = (loc) => {
     if (!loc) return "";
-    // Common patterns: "City, Region, Country" -> use first 2 parts if available
-    const parts = loc.split(",").map((s) => s.trim()).filter(Boolean);
+    
+    // Remove common prefixes like "North", "South", "East", "West" that aren't city names
+    let cleaned = loc.trim();
+    const prefixes = /^(north|south|east|west|northern|southern|eastern|western)\s+/i;
+    cleaned = cleaned.replace(prefixes, "");
+    
+    // Common patterns: "City, Region, Country" -> extract main city name
+    const parts = cleaned.split(",").map((s) => s.trim()).filter(Boolean);
+    
+    if (parts.length === 0) return "";
+    
+    // If single part, use it as-is
     if (parts.length === 1) return parts[0];
-    // prefer "City, Country" if there are many parts
-    return `${parts[0]},${parts[parts.length - 1]}`;
+    
+    // For multiple parts, try to find the main city name
+    // Usually the first part after removing directional prefixes
+    const mainCity = parts[0];
+    
+    // If we have country, use "City, Country" format
+    if (parts.length >= 2) {
+      const country = parts[parts.length - 1];
+      // Only add country if it looks like a country name (not a region)
+      if (country.length > 2 && !/^\d+/.test(country)) {
+        return `${mainCity},${country}`;
+      }
+    }
+    
+    return mainCity;
   };
 
   useEffect(() => {
@@ -107,8 +130,12 @@ export default function WeatherWidget({ location = "", units = "metric", cacheTT
       })
       .catch((err) => {
         if (!mounted) return;
-        console.error("Weather fetch error:", err);
-        setError("Failed to fetch weather.");
+        // Only log if it's not a "city not found" error (common and expected)
+        const errorMsg = err.message || "";
+        if (!errorMsg.includes("404") && !errorMsg.includes("city not found")) {
+          console.error("Weather fetch error:", err);
+        }
+        setError(null); // Don't show error, just don't display weather
       })
       .finally(() => mounted && setLoading(false));
 

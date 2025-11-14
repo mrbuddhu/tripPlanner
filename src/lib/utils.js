@@ -35,7 +35,25 @@ function writeCache(obj) {
 }
 
 function normalize(q) {
-  return String(q || "").trim().toLowerCase();
+  if (!q) return "";
+  
+  // Extract simple search terms from complex addresses
+  let cleaned = String(q).trim();
+  
+  // Remove common address parts
+  cleaned = cleaned
+    .replace(/\b(lane|street|road|avenue|boulevard|drive|way|block|extension|area|colony|sector)\b/gi, "")
+    .replace(/\b(c-?\d+|block\s+[a-z]|sector\s+\d+)\b/gi, "")
+    .replace(/[,\s]+/g, " ")
+    .trim();
+  
+  // Extract hotel name or main location name (first 2-3 words usually)
+  const words = cleaned.split(/\s+/).filter(w => w.length > 2);
+  
+  // Take first 2-3 meaningful words (hotel name or location)
+  const searchTerms = words.slice(0, 3).join(" ");
+  
+  return searchTerms.toLowerCase() || cleaned.toLowerCase();
 }
 
 /**
@@ -78,7 +96,10 @@ export async function fetchImageFor(query) {
 
     return imageUrl;
   } catch (err) {
-    console.error("fetchImageFor error", err);
+    // Only log if it's not a 400 error (common for invalid queries)
+    if (!err.message?.includes("400")) {
+      console.warn("fetchImageFor error", err);
+    }
     return DEFAULT_IMAGE;
   }
 }

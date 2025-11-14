@@ -1,3 +1,4 @@
+console.log("🚀 App starting...");
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
@@ -10,6 +11,8 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import Viewtrip from "./view-trip/[tripId]/index.jsx";
 import MyTrips from "./my-trips/index.jsx";
 import ErrorBoundary from "./components/ErrorBoundary";
+
+console.log("✅ All imports loaded");
 
 const router = createBrowserRouter([
   {
@@ -72,12 +75,16 @@ const AppContent = () => {
 };
 
 // Ensure root element exists before rendering
+console.log("🔍 Looking for root element...");
 const rootElement = document.getElementById("root");
 if (!rootElement) {
+  console.error("❌ Root element not found!");
   throw new Error("Root element not found. Make sure index.html has <div id='root'></div>");
 }
+console.log("✅ Root element found");
 
 try {
+  console.log("🎨 Creating root and rendering...");
   const root = createRoot(rootElement);
   root.render(
     <StrictMode>
@@ -86,14 +93,16 @@ try {
       </ErrorBoundary>
     </StrictMode>
   );
+  console.log("✅ App rendered successfully");
 } catch (error) {
-  console.error("Failed to render app:", error);
+  console.error("❌ Failed to render app:", error);
   if (rootElement) {
     rootElement.innerHTML = `
       <div style="padding: 20px; text-align: center; font-family: sans-serif;">
         <h1>Failed to load application</h1>
         <p>${error.message}</p>
-        <button onclick="window.location.reload()">Reload Page</button>
+        <pre style="text-align: left; background: #f5f5f5; padding: 10px; border-radius: 4px; overflow: auto;">${error.stack}</pre>
+        <button onclick="window.location.reload()" style="margin-top: 20px; padding: 10px 20px; background: #0070f3; color: white; border: none; border-radius: 4px; cursor: pointer;">Reload Page</button>
       </div>
     `;
   }

@@ -24,18 +24,20 @@ export default function Footer() {
         {/* Right: Optional social links */}
         <div className="flex items-center gap-4 text-gray-500">
           <a
-            href="https://github.com/"
+            href="https://github.com/Kr-Ankit27"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-gray-800 transition"
+            aria-label="GitHub Profile"
           >
             <FaGithub size={18} />
           </a>
           <a
-            href="https://linkedin.com/"
+            href="https://www.linkedin.com/in/kumar-ankit-bb9a30257/"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-gray-800 transition"
+            aria-label="LinkedIn Profile"
           >
             <FaLinkedin size={18} />
           </a>

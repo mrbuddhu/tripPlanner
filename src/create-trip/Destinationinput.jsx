@@ -14,14 +14,37 @@ const DestinationInput = ({ onSelect }) => {
     }
 
     const timeout = setTimeout(() => {
-      fetch(
-        `/api/v1/geocode/autocomplete?text=${encodeURIComponent(
-          query
-        )}&limit=5&apiKey=${apiKey}`
-      )
-        .then((res) => res.json())
+      if (!apiKey) {
+        console.warn("⚠️ Geoapify API key not found");
+        return;
+      }
+
+      // Use direct API URL in production, proxy in development
+      const apiUrl = import.meta.env.PROD
+        ? `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(
+            query
+          )}&limit=5&apiKey=${apiKey}`
+        : `/api/v1/geocode/autocomplete?text=${encodeURIComponent(
+            query
+          )}&limit=5&apiKey=${apiKey}`;
+
+      fetch(apiUrl)
+        .then(async (res) => {
+          // Check if response is actually JSON
+          const contentType = res.headers.get("content-type");
+          if (!contentType || !contentType.includes("application/json")) {
+            const text = await res.text();
+            console.error("❌ API returned non-JSON response:", text.substring(0, 200));
+            throw new Error(`API returned ${contentType || "unknown"} instead of JSON`);
+          }
+          return res.json();
+        })
         .then((data) => {
           setSuggestions(data.features || []);
+        })
+        .catch((err) => {
+          console.error("❌ Error fetching location suggestions:", err);
+          setSuggestions([]);
         });
     }, 300);
 
